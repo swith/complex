@@ -1,0 +1,21 @@
+language: generic
+sudo: required
+services:
+  - docker
+
+before_install:
+  - docker build -t swither/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+  - docker run -e CI=true swither/react-test npm test -- --coverage
+
+after_success:
+  - docker build -t swither/complex-client ./client
+  - docker build -t swither/complex-nginx ./nginx
+  - docker build -t swither/complex-server ./server
+  - docker build -t swither/complex-worker ./worker
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  - docker push swither/complex-client
+  - docker push swither/complex-nginx
+  - docker push swither/complex-server
+  - docker push swither/complex-worker
