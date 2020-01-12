@@ -19,3 +19,15 @@ after_success:
   - docker push swither/complex-nginx
   - docker push swither/complex-server
   - docker push swither/complex-worker
+
+deploy:
+  provider: elasticbeanstalk
+  region: "us-east-2"
+  app: "complex-docker"
+  env: "ComplexDocker-env"
+  bucket_name: "elasticbeanstalk-us-east-2-882925408877"
+  bucket_path: "complex-multi"
+  on:
+    branch: master
+  access_key_id: $AWS_ACCESS_KEY
+  secret_access_key: $AWS_SECRET_KEY
